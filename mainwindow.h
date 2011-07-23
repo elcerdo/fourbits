@@ -9,6 +9,9 @@ class MainWindow : public QMainWindow, protected Ui::MainWindow {
     public:
 	MainWindow(QWidget* parent = NULL);
 	~MainWindow();
+    public slots:
+	void on_widgetFB_stateChanged(int state);
+	void on_actionOpenDirectory_activated();
 };
 
 #endif

@@ -26,8 +26,10 @@
      <widget class="QLabel" name="label">
       <property name="font">
        <font>
-        <family>Monospace</family>
+        <family>Sans Serif</family>
         <pointsize>150</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
       </property>
       <property name="text">
@@ -49,8 +51,23 @@
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuOprnf">
+    <property name="title">
+     <string>Open</string>
+    </property>
+    <addaction name="actionOpenDirectory"/>
+   </widget>
+   <addaction name="menuOprnf"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpenDirectory">
+   <property name="text">
+    <string>openDirectory</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

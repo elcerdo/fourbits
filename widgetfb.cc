@@ -57,6 +57,7 @@ void WidgetFB::keyPressEvent(QKeyEvent *event) {
 	qDebug() << "a" << kk << bits[kk];
 	update();
 	emit stateChanged(getState());
+	event->accept();
     }
     kk++;
     if (event->key()==90) {
@@ -64,6 +65,7 @@ void WidgetFB::keyPressEvent(QKeyEvent *event) {
 	qDebug() << "b" << kk << bits[kk];
 	update();
 	emit stateChanged(getState());
+	event->accept();
     }
     kk++;
     if (event->key()==69) {
@@ -71,6 +73,7 @@ void WidgetFB::keyPressEvent(QKeyEvent *event) {
 	qDebug() << "c" << kk << bits[kk];
 	update();
 	emit stateChanged(getState());
+	event->accept();
     }
     kk++;
     if (event->key()==82) {
@@ -78,7 +81,9 @@ void WidgetFB::keyPressEvent(QKeyEvent *event) {
 	qDebug() << "d" << kk << bits[kk];
 	update();
 	emit stateChanged(getState());
+	event->accept();
     }
+    event->ignore();
 }
 
 int WidgetFB::getState() const {
