@@ -1,11 +1,11 @@
 #include <QApplication>
-#include <QWidget>
+#include "widgetfb.h"
 
 int main(int argc,char * argv[])
 {
     QApplication app(argc,argv);
 
-    QWidget main;
+    WidgetFB main;
     main.show();
 
     return app.exec();
