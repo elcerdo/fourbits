@@ -31,7 +31,7 @@
        </font>
       </property>
       <property name="text">
-       <string>00123</string>
+       <string>FOURBITS</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
