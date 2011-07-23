@@ -2,4 +2,5 @@ build
 Makefile
 *.o
 moc_*
+ui_*
 synth

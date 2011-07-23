@@ -9,6 +9,9 @@ class WidgetFB : public QWidget {
     Q_OBJECT
     public:
 	WidgetFB(QWidget *parent = NULL);
+	int getState() const;
+    signals:
+	void stateChanged(int state);
     protected:
 	virtual void paintEvent(QPaintEvent *event);
 	virtual void keyPressEvent(QKeyEvent *event);

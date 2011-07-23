@@ -47,7 +47,6 @@ WidgetFB::WidgetFB(QWidget *parent) : QWidget(parent) {
     for (int k=0; k<NBEATS; k++) {
 	bits.append(false);
     }
-    bits[0] = true;
 }
 
 void WidgetFB::keyPressEvent(QKeyEvent *event) {
@@ -57,26 +56,42 @@ void WidgetFB::keyPressEvent(QKeyEvent *event) {
 	bits[kk] = !bits[kk];
 	qDebug() << "a" << kk << bits[kk];
 	update();
+	emit stateChanged(getState());
     }
     kk++;
     if (event->key()==90) {
 	bits[kk] = !bits[kk];
 	qDebug() << "b" << kk << bits[kk];
 	update();
+	emit stateChanged(getState());
     }
     kk++;
     if (event->key()==69) {
 	bits[kk] = !bits[kk];
 	qDebug() << "c" << kk << bits[kk];
 	update();
+	emit stateChanged(getState());
     }
     kk++;
     if (event->key()==82) {
 	bits[kk] = !bits[kk];
 	qDebug() << "d" << kk << bits[kk];
 	update();
+	emit stateChanged(getState());
     }
 }
+
+int WidgetFB::getState() const {
+    int base = 2;
+    int current = 1;
+    int total = 0;
+    for (Bits::const_iterator iter=bits.begin(); iter!=bits.end(); iter++) {
+	if (*iter) total += current;	
+	current *= base;
+    }
+    return total;
+}
+
 
 void WidgetFB::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
@@ -87,6 +102,7 @@ void WidgetFB::paintEvent(QPaintEvent *event) {
     painter.translate(width()/2,height()/2);
     painter.translate(-((NBEATS-1)*(OUTERRADIUS*2+KERN))/2,0);
     int kk=0;
+    qDebug() << "state =" << getState();
     for (Bits::const_iterator iter=bits.begin(); iter!=bits.end(); iter++) {
 	qDebug() << kk << *iter;
 	drawPad(painter,kk*(OUTERRADIUS*2+KERN),0,*iter);
