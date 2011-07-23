@@ -4,3 +4,4 @@ Makefile
 moc_*
 ui_*
 synth
+*.zip
