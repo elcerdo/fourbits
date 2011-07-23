@@ -28,4 +28,19 @@ void MainWindow::on_actionOpenDirectory_activated() {
     QString directory = QFileDialog::getExistingDirectory();
     if (directory.isNull()) return;
     qDebug() << "open directory" << directory;
+
+    //Q_ASSERT(QSound::isAvailable());
+
+    sounds.clear();
+    int kk = 0;
+    while (kk<99 && sounds.size()<4) {
+	QString filename = directory + QString("/%1.wav").arg(kk,2,10,QChar('0'));
+	qDebug() << "**" << filename << sounds.size();
+	QSound* sound = new QSound(filename);
+	sound->play();
+
+	sounds.append(sound);
+	kk++;
+    }
+
 }
