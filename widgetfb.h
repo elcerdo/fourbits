@@ -9,6 +9,7 @@ class WidgetFB : public QWidget {
     Q_OBJECT
     public:
 	WidgetFB(QWidget *parent = NULL);
+	static QColor getColorFromState(int state);
 	int getState() const;
     signals:
 	void stateChanged(int state);

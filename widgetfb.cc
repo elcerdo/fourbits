@@ -5,6 +5,7 @@
 #include <QKeySequence>
 #include <QBrush>
 #include <QDebug>
+#include <QColor>
 
 #define WIDTH 1000
 #define HEIGHT 400
@@ -13,7 +14,14 @@
 #define KERN 10
 #define NBEATS 4
 
-void drawPad(QPainter &painter,int x,int y,bool state) {
+static const QColor colors[] = {
+    QColor::fromCmykF(1,0,0,0),
+    QColor::fromCmykF(0,1,0,0),
+    QColor::fromCmykF(0,0,1,0),
+    QColor::fromCmykF(0,0,0,1)
+};
+
+void drawPad(QPainter &painter,int index,int x,int y,bool state) {
     painter.save();
     painter.translate(x,y);
 
@@ -34,12 +42,26 @@ void drawPad(QPainter &painter,int x,int y,bool state) {
 	QBrush brush;
 	brush.setStyle(Qt::SolidPattern);
 	//brush.setColor(qRgb(255,0,0));
+	brush.setColor(colors[index]);
+	painter.setPen(Qt::NoPen);
 	painter.setBrush(brush);
 	painter.drawEllipse(-INNERRADIUS,-INNERRADIUS,2*INNERRADIUS,2*INNERRADIUS);
 	painter.restore();
     }
 
     painter.restore();
+}
+
+QColor WidgetFB::getColorFromState(int state) {
+    Bits bits;
+    for (int kk=0; kk<NBEATS; kk++) {
+	if  (state & (1<<kk)) {
+	    bits.append(true);
+	} else {
+	    bits.append(false);
+	}
+    }
+    return QColor::fromCmykF(bits[0],bits[1],bits[2],bits[3]);
 }
 
 WidgetFB::WidgetFB(QWidget *parent) : QWidget(parent) {
@@ -90,6 +112,7 @@ int WidgetFB::getState() const {
     int base = 2;
     int current = 1;
     int total = 0;
+
     for (Bits::const_iterator iter=bits.begin(); iter!=bits.end(); iter++) {
 	if (*iter) total += current;	
 	current *= base;
@@ -110,7 +133,7 @@ void WidgetFB::paintEvent(QPaintEvent *event) {
     qDebug() << "state =" << getState();
     for (Bits::const_iterator iter=bits.begin(); iter!=bits.end(); iter++) {
 	qDebug() << kk << *iter;
-	drawPad(painter,kk*(OUTERRADIUS*2+KERN),0,*iter);
+	drawPad(painter,kk,kk*(OUTERRADIUS*2+KERN),0,*iter);
 	kk++;
     }
 }
