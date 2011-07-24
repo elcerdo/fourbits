@@ -4,7 +4,7 @@
 #include <QPen>
 #include <QKeySequence>
 #include <QBrush>
-//#include <QDebug>
+#include <QDebug>
 #include <QColor>
 
 #define WIDTH 1000
@@ -77,9 +77,9 @@ void WidgetFB::keyReleaseEvent(QKeyEvent* /*event*/) {
 }
 
 void WidgetFB::keyPressEvent(QKeyEvent* event) {
-    //qDebug() << "pressed" << event->key();
+    qDebug() << "pressed" << event->key();
     int kk=0;
-    if (event->key()==65) {
+    if (event->key()==65 || event->key()==81) {
 	bits[kk] = !bits[kk];
 	//qDebug() << "a" << kk << bits[kk];
 	update();
@@ -88,7 +88,7 @@ void WidgetFB::keyPressEvent(QKeyEvent* event) {
 	event->accept();
     }
     kk++;
-    if (event->key()==90) {
+    if (event->key()==90 || event->key()==83) {
 	bits[kk] = !bits[kk];
 	//qDebug() << "b" << kk << bits[kk];
 	update();
@@ -97,7 +97,7 @@ void WidgetFB::keyPressEvent(QKeyEvent* event) {
 	event->accept();
     }
     kk++;
-    if (event->key()==69) {
+    if (event->key()==69 || event->key()==68) {
 	bits[kk] = !bits[kk];
 	//qDebug() << "c" << kk << bits[kk];
 	update();
@@ -106,7 +106,7 @@ void WidgetFB::keyPressEvent(QKeyEvent* event) {
 	event->accept();
     }
     kk++;
-    if (event->key()==82) {
+    if (event->key()==82 || event->key()==70) {
 	bits[kk] = !bits[kk];
 	//qDebug() << "d" << kk << bits[kk];
 	update();
