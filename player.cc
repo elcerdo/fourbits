@@ -1,4 +1,5 @@
-#include "bass.h"
+#include "player.h"
+
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -11,15 +12,7 @@ using std::cout;
 #define TABLESIZE 2048
 #define KEYS 17
 
-BASS_INFO info;
-HSTREAM stream;
-
 int sinetable[TABLESIZE];
-
-const unsigned int keys[KEYS]={
-    'Q','2','W','3','E','R','5','T','6','Y','7','U',
-    'I','9','O','0','P'
-};
 
 #define MAXVOL  4000    // higher value = longer fadeout
 int vol[KEYS]={0},pos[KEYS];
@@ -44,7 +37,7 @@ DWORD CALLBACK WriteStream(HSTREAM handle, short *buffer, DWORD length, void *us
     return length;
 }
 
-void setNote(int key,bool state) {
+void Player::setNote(int key,bool state) {
     if (state) {
 	pos[key]=0;
 	vol[key]=MAXVOL; 
@@ -53,11 +46,7 @@ void setNote(int key,bool state) {
     }
 }
 
-
-int main(int argc,char * argv[])
-{
-    cout << "START" << endl;
-
+Player::Player() {
     BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD,10);
 
     if (!BASS_Init(-1,44100,BASS_DEVICE_LATENCY,NULL,NULL)) {
@@ -72,21 +61,8 @@ int main(int argc,char * argv[])
 
     stream = BASS_StreamCreate(44100,2,0,(STREAMPROC*)WriteStream,0);
     BASS_ChannelPlay(stream,TRUE);
-
-    setNote(0,true);
-    setNote(2,true);
-    usleep (1000000);
-    setNote(0,false);
-    usleep (1000000);
-    setNote(2,false);
-    setNote(0,true);
-    usleep(5000000);
-
-    cout << "END" << endl;
-
-
-    BASS_Free();
 }
 
-
-
+Player::~Player() {
+    BASS_Free();
+}
