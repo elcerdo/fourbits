@@ -71,6 +71,11 @@ WidgetFB::WidgetFB(QWidget *parent) : QWidget(parent) {
     }
 }
 
+void WidgetFB::keyReleaseEvent(QKeyEvent *event) {
+    qDebug() << "released" << event->key();
+    emit stateReleased(getState());
+}
+
 void WidgetFB::keyPressEvent(QKeyEvent *event) {
     qDebug() << "pressed" << event->key();
     int kk=0;

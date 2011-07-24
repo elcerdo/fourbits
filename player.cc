@@ -34,7 +34,7 @@ DWORD CALLBACK WriteStream(HSTREAM, short *buffer, DWORD length, void *) {
     return length;
 }
 
-void Player::clearNote() {
+void Player::clearNotes() {
     for (int n=0;n<KEYS;n++) {
 	setNote(n,false);
     }
@@ -48,6 +48,13 @@ void Player::setNote(int key,bool state) {
 	vol[key]=0;
     }
 }
+
+void Player::fade() {
+    for (int n=0;n<KEYS;n++) {
+	if (vol[n]==MAXVOL) vol[n]--;
+    }
+}
+
 
 Player::Player() {
     BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD,10);

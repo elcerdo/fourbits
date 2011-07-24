@@ -13,9 +13,11 @@ class WidgetFB : public QWidget {
 	int getState() const;
     signals:
 	void stateChanged(int state);
+	void stateReleased(int state);
     protected:
 	virtual void paintEvent(QPaintEvent *event);
 	virtual void keyPressEvent(QKeyEvent *event);
+	virtual void keyReleaseEvent(QKeyEvent *event);
 	typedef QVector<bool> Bits;
 	Bits bits;
 

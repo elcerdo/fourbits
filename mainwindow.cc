@@ -15,7 +15,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::on_widgetFB_stateChanged(int state) {
     qDebug() << "new state" << state;
-    player.clearNote();
+    player.clearNotes();
     player.setNote(state,true);
     //FIXME
     qDebug() << "*********************";
@@ -25,6 +25,12 @@ void MainWindow::on_widgetFB_stateChanged(int state) {
     label->update();
     qDebug() << "*********************";
 }
+
+void MainWindow::on_widgetFB_stateReleased(int state) {
+    qDebug() << "new state released" << state;
+    player.fade();
+}
+
 
 void MainWindow::on_actionOpenDirectory_activated() {
     QString directory = QFileDialog::getExistingDirectory();

@@ -9,10 +9,12 @@ class Player {
 	Player();
 	~Player();
 	void setNote(int note, bool state);
-	void clearNote();
+	void clearNotes();
+	void fade();
     protected:
 	BASS_INFO info;
 	HSTREAM stream;
+	bool fading;
 };
 
 #endif
