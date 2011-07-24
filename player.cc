@@ -91,7 +91,7 @@ Player::Player() {
     BASS_GetInfo(&info);
     BASS_SetConfig(BASS_CONFIG_BUFFER,10+info.minbuf);
 
-    std::string directory = "andrew";
+    std::string directory = "/home/pierre/git/andrew/andrew";
 
     int number;
     number = 0;
