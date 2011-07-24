@@ -12,6 +12,7 @@ class WidgetFB : public QWidget {
 	static QColor getColorFromState(int state);
 	int getState() const;
     signals:
+	void padPressed(int number);
 	void stateChanged(int state);
 	void stateReleased(int state);
     protected:

@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <cassert>
 using std::endl;
 using std::cerr;
 using std::cout;
@@ -49,10 +50,21 @@ void Player::setNote(int key,bool state) {
     }
 }
 
+void Player::playSample(int number) {
+    cout << "playing sample " << number << endl;
+
+    HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
+    BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,0.5f);
+    BASS_ChannelSetAttribute(handle,BASS_ATTRIB_PAN,((rand()%201)-100)/100.f);
+
+    BASS_ChannelPlay(handle,false);
+}
+
 void Player::fade() {
     for (int n=0;n<KEYS;n++) {
 	if (vol[n]==MAXVOL) vol[n]--;
     }
+
 }
 
 
@@ -69,10 +81,25 @@ Player::Player() {
     BASS_GetInfo(&info);
     BASS_SetConfig(BASS_CONFIG_BUFFER,10+info.minbuf);
 
+    int number;
+    number = 0;
+    samples[number] = BASS_SampleLoad(false,"01/00.wav",0,0,3,BASS_SAMPLE_OVER_POS);
+    assert(samples[number]);
+    number = 1;
+    samples[number] = BASS_SampleLoad(false,"01/01.wav",0,0,3,BASS_SAMPLE_OVER_POS);
+    assert(samples[number]);
+    number = 2;
+    samples[number] = BASS_SampleLoad(false,"01/02.wav",0,0,3,BASS_SAMPLE_OVER_POS);
+    assert(samples[number]);
+    number = 3;
+    samples[number] = BASS_SampleLoad(false,"01/03.wav",0,0,3,BASS_SAMPLE_OVER_POS);
+    assert(samples[number]);
+
     stream = BASS_StreamCreate(44100,2,0,(STREAMPROC*)WriteStream,0);
     BASS_ChannelPlay(stream,TRUE);
 }
 
 Player::~Player() {
+    BASS_StreamFree(stream);
     BASS_Free();
 }

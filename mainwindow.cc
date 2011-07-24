@@ -31,6 +31,11 @@ void MainWindow::on_widgetFB_stateReleased(int state) {
     player.fade();
 }
 
+void MainWindow::on_widgetFB_padPressed(int number) {
+    qDebug() << "hitted" << number;
+    player.playSample(number);
+}
+
 
 void MainWindow::on_actionOpenDirectory_activated() {
     QString directory = QFileDialog::getExistingDirectory();
@@ -39,12 +44,12 @@ void MainWindow::on_actionOpenDirectory_activated() {
 
     //Q_ASSERT(QSound::isAvailable());
 
-    int kk = 0;
-    while (kk<99) {
-	QString filename = directory + QString("/%1.wav").arg(kk,2,10,QChar('0'));
-	qDebug() << "**" << filename;
+    //int kk = 0;
+    //while (kk<99) {
+    //    QString filename = directory + QString("/%1.wav").arg(kk,2,10,QChar('0'));
+    //    qDebug() << "**" << filename;
 
-	kk++;
-    }
+    //    kk++;
+    //}
 
 }
