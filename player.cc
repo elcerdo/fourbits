@@ -18,11 +18,16 @@ int sinetable[TABLESIZE];
 #define MAXVOL  4000    // higher value = longer fadeout
 int vol[KEYS]={0},pos[KEYS];
 
+int gamme[16] = {
+    -24, -22, -20, -19, -17, -15, -14, -12, -10, -8, -7, -5, -3, -2, 0, 2
+};
+    
+
 DWORD CALLBACK WriteStream(HSTREAM, short *buffer, DWORD length, void *) {
     memset(buffer,0,length);
     for (int n=0;n<KEYS;n++) {
 	if (!vol[n]) continue;
-	float f=pow(2.0,(n+3)/12.0)*TABLESIZE*440.0/44100.0;
+	float f=pow(2.0,gamme[n]/12.0+1)*TABLESIZE*440.0/44100.0;
 	for (DWORD c=0;c<length/4 && vol[n];c++) {
 	    int s=sinetable[(int)((pos[n]++)*f)&(TABLESIZE-1)]*vol[n]/MAXVOL;
 	    s+=(int)buffer[c*2];
@@ -55,6 +60,10 @@ void Player::playSample(int number) {
 
     HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
     BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
+    if (number==0) {
+	BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,.1);
+    }
+
     BASS_ChannelSetAttribute(handle,BASS_ATTRIB_PAN,((rand()%201)-100)/100.f);
 
     BASS_ChannelPlay(handle,false);
@@ -87,15 +96,31 @@ Player::Player() {
     number = 0;
     samples[number] = BASS_SampleLoad(false,(directory+"/1.wav").c_str(),0,0,3,BASS_SAMPLE_OVER_POS);
     assert(samples[number]);
+    {
+	HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
+	BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,.01);
+    }
     number = 1;
     samples[number] = BASS_SampleLoad(false,(directory+"/2.wav").c_str(),0,0,3,BASS_SAMPLE_OVER_POS);
     assert(samples[number]);
+    {
+	HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
+	BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
+    }
     number = 2;
     samples[number] = BASS_SampleLoad(false,(directory+"/3.wav").c_str(),0,0,3,BASS_SAMPLE_OVER_POS);
     assert(samples[number]);
+    {
+	HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
+	BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
+    }
     number = 3;
     samples[number] = BASS_SampleLoad(false,(directory+"/4.wav").c_str(),0,0,3,BASS_SAMPLE_OVER_POS);
     assert(samples[number]);
+    {
+	HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
+	BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
+    }
 
     stream = BASS_StreamCreate(44100,2,0,(STREAMPROC*)WriteStream,0);
     BASS_ChannelPlay(stream,TRUE);
