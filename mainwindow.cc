@@ -15,6 +15,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::on_widgetFB_stateChanged(int state) {
     qDebug() << "new state" << state;
+    player.clearNote();
+    player.setNote(state,true);
     //FIXME
     qDebug() << "*********************";
     QPalette pal;
@@ -31,15 +33,11 @@ void MainWindow::on_actionOpenDirectory_activated() {
 
     //Q_ASSERT(QSound::isAvailable());
 
-    sounds.clear();
     int kk = 0;
-    while (kk<99 && sounds.size()<4) {
+    while (kk<99) {
 	QString filename = directory + QString("/%1.wav").arg(kk,2,10,QChar('0'));
-	qDebug() << "**" << filename << sounds.size();
-	QSound* sound = new QSound(filename);
-	sound->play();
+	qDebug() << "**" << filename;
 
-	sounds.append(sound);
 	kk++;
     }
 

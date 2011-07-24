@@ -17,16 +17,13 @@ int sinetable[TABLESIZE];
 #define MAXVOL  4000    // higher value = longer fadeout
 int vol[KEYS]={0},pos[KEYS];
 
-DWORD CALLBACK WriteStream(HSTREAM handle, short *buffer, DWORD length, void *user) {
-    int n,s;
-    DWORD c;
-    float f;
+DWORD CALLBACK WriteStream(HSTREAM, short *buffer, DWORD length, void *) {
     memset(buffer,0,length);
-    for (n=0;n<KEYS;n++) {
+    for (int n=0;n<KEYS;n++) {
 	if (!vol[n]) continue;
-	f=pow(2.0,(n+3)/12.0)*TABLESIZE*440.0/44100.0;
-	for (c=0;c<length/4 && vol[n];c++) {
-	    s=sinetable[(int)((pos[n]++)*f)&(TABLESIZE-1)]*vol[n]/MAXVOL;
+	float f=pow(2.0,(n+3)/12.0)*TABLESIZE*440.0/44100.0;
+	for (DWORD c=0;c<length/4 && vol[n];c++) {
+	    int s=sinetable[(int)((pos[n]++)*f)&(TABLESIZE-1)]*vol[n]/MAXVOL;
 	    s+=(int)buffer[c*2];
 	    if (s>32767) s=32767;
 	    else if (s<-32768) s=-32768;
@@ -37,12 +34,18 @@ DWORD CALLBACK WriteStream(HSTREAM handle, short *buffer, DWORD length, void *us
     return length;
 }
 
+void Player::clearNote() {
+    for (int n=0;n<KEYS;n++) {
+	setNote(n,false);
+    }
+}
+
 void Player::setNote(int key,bool state) {
     if (state) {
 	pos[key]=0;
 	vol[key]=MAXVOL; 
     } else {
-	vol[key]--;
+	vol[key]=0;
     }
 }
 

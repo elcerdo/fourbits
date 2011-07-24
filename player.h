@@ -9,6 +9,7 @@ class Player {
 	Player();
 	~Player();
 	void setNote(int note, bool state);
+	void clearNote();
     protected:
 	BASS_INFO info;
 	HSTREAM stream;

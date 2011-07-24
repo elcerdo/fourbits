@@ -2,8 +2,8 @@
 #define __MAINWINDOW_H__
 
 #include <QMainWindow>
-#include <QSound>
 #include "ui_mainwindow.h"
+#include "player.h"
 
 class MainWindow : public QMainWindow, protected Ui::MainWindow {
     Q_OBJECT
@@ -14,8 +14,7 @@ class MainWindow : public QMainWindow, protected Ui::MainWindow {
 	void on_widgetFB_stateChanged(int state);
 	void on_actionOpenDirectory_activated();
     protected:
-	typedef QVector<QSound*> Sounds;
-	Sounds sounds;
+	Player player;
 };
 
 #endif
