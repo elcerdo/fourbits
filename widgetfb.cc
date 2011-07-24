@@ -4,7 +4,7 @@
 #include <QPen>
 #include <QKeySequence>
 #include <QBrush>
-#include <QDebug>
+//#include <QDebug>
 #include <QColor>
 
 #define WIDTH 1000
@@ -71,17 +71,17 @@ WidgetFB::WidgetFB(QWidget *parent) : QWidget(parent) {
     }
 }
 
-void WidgetFB::keyReleaseEvent(QKeyEvent *event) {
-    qDebug() << "released" << event->key();
+void WidgetFB::keyReleaseEvent(QKeyEvent* /*event*/) {
+    //qDebug() << "released" << event->key();
     emit stateReleased(getState());
 }
 
-void WidgetFB::keyPressEvent(QKeyEvent *event) {
-    qDebug() << "pressed" << event->key();
+void WidgetFB::keyPressEvent(QKeyEvent* event) {
+    //qDebug() << "pressed" << event->key();
     int kk=0;
     if (event->key()==65) {
 	bits[kk] = !bits[kk];
-	qDebug() << "a" << kk << bits[kk];
+	//qDebug() << "a" << kk << bits[kk];
 	update();
 	emit stateChanged(getState());
 	emit padPressed(0);
@@ -90,7 +90,7 @@ void WidgetFB::keyPressEvent(QKeyEvent *event) {
     kk++;
     if (event->key()==90) {
 	bits[kk] = !bits[kk];
-	qDebug() << "b" << kk << bits[kk];
+	//qDebug() << "b" << kk << bits[kk];
 	update();
 	emit stateChanged(getState());
 	emit padPressed(1);
@@ -99,7 +99,7 @@ void WidgetFB::keyPressEvent(QKeyEvent *event) {
     kk++;
     if (event->key()==69) {
 	bits[kk] = !bits[kk];
-	qDebug() << "c" << kk << bits[kk];
+	//qDebug() << "c" << kk << bits[kk];
 	update();
 	emit stateChanged(getState());
 	emit padPressed(2);
@@ -108,7 +108,7 @@ void WidgetFB::keyPressEvent(QKeyEvent *event) {
     kk++;
     if (event->key()==82) {
 	bits[kk] = !bits[kk];
-	qDebug() << "d" << kk << bits[kk];
+	//qDebug() << "d" << kk << bits[kk];
 	update();
 	emit stateChanged(getState());
 	emit padPressed(3);
@@ -139,9 +139,9 @@ void WidgetFB::paintEvent(QPaintEvent *event) {
     painter.translate(width()/2,height()/2);
     painter.translate(-((NBEATS-1)*(OUTERRADIUS*2+KERN))/2,0);
     int kk=0;
-    qDebug() << "state =" << getState();
+    //qDebug() << "state =" << getState();
     for (Bits::const_iterator iter=bits.begin(); iter!=bits.end(); iter++) {
-	qDebug() << kk << *iter;
+	//qDebug() << kk << *iter;
 	drawPad(painter,kk,kk*(OUTERRADIUS*2+KERN),0,*iter);
 	kk++;
     }

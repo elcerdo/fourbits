@@ -1,13 +1,14 @@
 #include "player.h"
 
-#include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
 #include <cassert>
-using std::endl;
-using std::cerr;
-using std::cout;
+#include <string>
+//#include <iostream>
+//using std::endl;
+//using std::cerr;
+//using std::cout;
 
 #define PI 3.14159265358979323846
 #define TABLESIZE 2048
@@ -56,7 +57,7 @@ void Player::setNote(int key,bool state) {
 }
 
 void Player::playSample(int number) {
-    cout << "playing sample " << number << endl;
+    //cout << "playing sample " << number << endl;
 
     HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
     BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
@@ -81,7 +82,7 @@ Player::Player() {
     BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD,10);
 
     if (!BASS_Init(-1,44100,BASS_DEVICE_LATENCY,NULL,NULL)) {
-	cerr << "can't init bass" << endl;
+	//cerr << "can't init bass" << endl;
 	exit(2);
     }
 

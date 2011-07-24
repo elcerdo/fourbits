@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 #include <QFileDialog>
-#include <QDebug>
+//#include <QDebug>
 #include <QColor>
 #include <QPalette>
 
@@ -14,25 +14,25 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_widgetFB_stateChanged(int state) {
-    qDebug() << "new state" << state;
+    //qDebug() << "new state" << state;
     player.clearNotes();
     player.setNote(state,true);
     //FIXME
-    qDebug() << "*********************";
+    //qDebug() << "*********************";
     QPalette pal;
     pal.setColor(QPalette::Text,QColor::fromRgbF(1,1,0));
     label->setPalette(pal);
     label->update();
-    qDebug() << "*********************";
+    //qDebug() << "*********************";
 }
 
-void MainWindow::on_widgetFB_stateReleased(int state) {
-    qDebug() << "new state released" << state;
+void MainWindow::on_widgetFB_stateReleased(int /*state*/) {
+    //qDebug() << "new state released" << state;
     player.fade();
 }
 
 void MainWindow::on_widgetFB_padPressed(int number) {
-    qDebug() << "hitted" << number;
+    //qDebug() << "hitted" << number;
     player.playSample(number);
 }
 
@@ -40,7 +40,7 @@ void MainWindow::on_widgetFB_padPressed(int number) {
 void MainWindow::on_actionOpenDirectory_activated() {
     QString directory = QFileDialog::getExistingDirectory();
     if (directory.isNull()) return;
-    qDebug() << "open directory" << directory;
+    //qDebug() << "open directory" << directory;
 
     //Q_ASSERT(QSound::isAvailable());
 
