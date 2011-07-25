@@ -9,8 +9,10 @@
 
 #define WIDTH 1000
 #define HEIGHT 400
-#define OUTERRADIUS 100
-#define INNERRADIUS 80
+#define OUTTERRADIUS 80
+#define OUTTERWIDTHMIN 20
+#define OUTTERWIDTHMAX 50
+#define INNERRADIUS 50
 #define KERN 10
 #define NBEATS 4
 
@@ -21,54 +23,66 @@ static const QColor colors[] = {
     QColor::fromCmykF(0,0,0,1)
 };
 
-void drawPad(QPainter &painter,int index,int x,int y,bool state) {
+void drawPad(QPainter &painter,int index,int x,int y,bool state, int width) {
     painter.save();
     painter.translate(x,y);
 
     QBrush brush;
 
     {
-	painter.save();
-	QPen pen;
-	pen.setWidth(4);
-	//pen.setColor(qRgb(255,0,0));
-	painter.setPen(pen);
-	painter.drawEllipse(-OUTERRADIUS,-OUTERRADIUS,2*OUTERRADIUS,2*OUTERRADIUS);
-	painter.restore();
+        painter.save();
+        QPen pen;
+        pen.setWidth(width);
+        //pen.setColor(qRgb(255,0,0));
+        painter.setPen(pen);
+        QBrush brush;
+        brush.setStyle(Qt::SolidPattern);
+        brush.setColor("white");
+        painter.setBrush(brush);
+        painter.drawEllipse(-OUTTERRADIUS,-OUTTERRADIUS,2*OUTTERRADIUS,2*OUTTERRADIUS);
+        painter.restore();
     }
 
     if (state) {
-	painter.save();
-	QBrush brush;
-	brush.setStyle(Qt::SolidPattern);
-	//brush.setColor(qRgb(255,0,0));
-	brush.setColor(colors[index]);
-	painter.setPen(Qt::NoPen);
-	painter.setBrush(brush);
-	painter.drawEllipse(-INNERRADIUS,-INNERRADIUS,2*INNERRADIUS,2*INNERRADIUS);
-	painter.restore();
+        painter.save();
+        QBrush brush;
+        brush.setStyle(Qt::SolidPattern);
+        //brush.setColor(qRgb(255,0,0));
+        brush.setColor(colors[index]);
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(brush);
+        painter.drawEllipse(-INNERRADIUS,-INNERRADIUS,2*INNERRADIUS,2*INNERRADIUS);
+        painter.restore();
     }
 
     painter.restore();
 }
 
-QColor WidgetFB::getColorFromState(int state) {
-    Bits bits;
-    for (int kk=0; kk<NBEATS; kk++) {
-	if  (state & (1<<kk)) {
-	    bits.append(true);
-	} else {
-	    bits.append(false);
-	}
-    }
-    return QColor::fromCmykF(bits[0],bits[1],bits[2],bits[3]);
+QColor WidgetFB::getColor() const {
+    return QColor::fromCmykF(bits[0].state,bits[1].state,bits[2].state,bits[3].state);
 }
 
-WidgetFB::WidgetFB(QWidget *parent) : QWidget(parent) {
+void WidgetFB::on_timer_timeout() {
+    qDebug() << "timeout";
+    for (Bits::iterator iter=bits.begin(); iter!=bits.end(); iter++) {
+	iter->width--;
+	if (iter->width<OUTTERWIDTHMIN) iter->width=OUTTERWIDTHMIN;
+    }
+	
+    update();
+}
+
+WidgetFB::WidgetFB(QWidget *parent) : QWidget(parent), style(0) {
     resize(WIDTH,HEIGHT);
     for (int k=0; k<NBEATS; k++) {
-	bits.append(false);
+        bits.append(Bit());
     }
+    timer = new QTimer(this);
+    timer->setObjectName("timer");
+    timer->setInterval(50);
+    timer->setSingleShot(false);
+    timer->start();
+    QMetaObject::connectSlotsByName(this);
 }
 
 void WidgetFB::keyReleaseEvent(QKeyEvent* /*event*/) {
@@ -76,43 +90,43 @@ void WidgetFB::keyReleaseEvent(QKeyEvent* /*event*/) {
     emit stateReleased(getState());
 }
 
+void WidgetFB::toogleState(int num) {
+    bits[num].state = !bits[num].state;
+    qDebug() << bits[num].state << bits[num].width;
+    bits[num].width = OUTTERWIDTHMAX;
+    //qDebug() << "a" << kk << bits[kk];
+    update();
+}
+
 void WidgetFB::keyPressEvent(QKeyEvent* event) {
     qDebug() << "pressed" << event->key();
     int kk=0;
     if (event->key()==65 || event->key()==81) {
-	bits[kk] = !bits[kk];
-	//qDebug() << "a" << kk << bits[kk];
-	update();
-	emit stateChanged(getState());
-	emit padPressed(0);
-	event->accept();
+        toogleState(kk);
+        emit stateChanged(getState());
+        emit padPressed(kk);
+        event->accept();
     }
     kk++;
     if (event->key()==90 || event->key()==83) {
-	bits[kk] = !bits[kk];
-	//qDebug() << "b" << kk << bits[kk];
-	update();
-	emit stateChanged(getState());
-	emit padPressed(1);
-	event->accept();
+        toogleState(kk);
+        emit stateChanged(getState());
+        emit padPressed(kk);
+        event->accept();
     }
     kk++;
     if (event->key()==69 || event->key()==68) {
-	bits[kk] = !bits[kk];
-	//qDebug() << "c" << kk << bits[kk];
-	update();
-	emit stateChanged(getState());
-	emit padPressed(2);
-	event->accept();
+        toogleState(kk);
+        emit stateChanged(getState());
+        emit padPressed(kk);
+        event->accept();
     }
     kk++;
     if (event->key()==82 || event->key()==70) {
-	bits[kk] = !bits[kk];
-	//qDebug() << "d" << kk << bits[kk];
-	update();
-	emit stateChanged(getState());
-	emit padPressed(3);
-	event->accept();
+        toogleState(kk);
+        emit stateChanged(getState());
+        emit padPressed(kk);
+        event->accept();
     }
     event->ignore();
 }
@@ -123,8 +137,8 @@ int WidgetFB::getState() const {
     int total = 0;
 
     for (Bits::const_iterator iter=bits.begin(); iter!=bits.end(); iter++) {
-	if (*iter) total += current;	
-	current *= base;
+        if (iter->state) total += current;
+        current *= base;
     }
     return total;
 }
@@ -137,13 +151,21 @@ void WidgetFB::paintEvent(QPaintEvent *event) {
     painter.setRenderHint(QPainter::Antialiasing);
 
     painter.translate(width()/2,height()/2);
-    painter.translate(-((NBEATS-1)*(OUTERRADIUS*2+KERN))/2,0);
-    int kk=0;
-    //qDebug() << "state =" << getState();
-    for (Bits::const_iterator iter=bits.begin(); iter!=bits.end(); iter++) {
-	//qDebug() << kk << *iter;
-	drawPad(painter,kk,kk*(OUTERRADIUS*2+KERN),0,*iter);
-	kk++;
+    painter.translate(-((NBEATS-1)*(OUTTERRADIUS*2+KERN))/2,0);
+    qDebug() << "style" << style;
+    if (style==1) {
+    } else {
+	int kk=0;
+	//qDebug() << "state =" << getState();
+	for (Bits::const_iterator iter=bits.begin(); iter!=bits.end(); iter++) {
+	    //qDebug() << kk << *iter;
+	    drawPad(painter,kk,kk*(OUTTERRADIUS*2+KERN),0,iter->state,iter->width);
+	    kk++;
+	}
     }
 }
 
+WidgetFB::Bit::Bit() :
+    state(false),
+    width(OUTTERWIDTHMIN) {
+}
