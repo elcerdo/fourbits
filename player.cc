@@ -57,6 +57,7 @@ void Player::setNote(int key,bool state) {
 }
 
 void Player::playSample(int number) {
+    assert(samplesWorking);
     //cout << "playing sample " << number << endl;
 
     HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
@@ -78,7 +79,8 @@ void Player::fade() {
 }
 
 
-Player::Player() {
+Player::Player() :
+samplesWorking(false) {
     BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD,10);
 
     if (!BASS_Init(-1,44100,BASS_DEVICE_LATENCY,NULL,NULL)) {
@@ -91,7 +93,13 @@ Player::Player() {
     BASS_GetInfo(&info);
     BASS_SetConfig(BASS_CONFIG_BUFFER,10+info.minbuf);
 
-    std::string directory = "/home/pierre/git/andrew/andrew";
+    stream = BASS_StreamCreate(44100,2,0,(STREAMPROC*)WriteStream,0);
+    BASS_ChannelPlay(stream,TRUE);
+
+    loadSamplesFromDirectory("andrew");
+}
+
+void Player::loadSamplesFromDirectory(const std::string &directory) {
 
     int number;
     number = 0;
@@ -122,9 +130,8 @@ Player::Player() {
 	HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
 	BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
     }
-
-    stream = BASS_StreamCreate(44100,2,0,(STREAMPROC*)WriteStream,0);
-    BASS_ChannelPlay(stream,TRUE);
+    
+    samplesWorking = true;
 }
 
 Player::~Player() {
