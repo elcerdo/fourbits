@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 #include <QFileDialog>
-//#include <QDebug>
+#include <QDebug>
 #include <QColor>
 #include <QPalette>
 
@@ -40,6 +40,8 @@ void MainWindow::on_widgetFB_padPressed(int number) {
 void MainWindow::on_actionOpenDirectory_activated() {
     QString directory = QFileDialog::getExistingDirectory();
     if (directory.isNull()) return;
+    bool ok = player.loadSamplesFromDirectory(qPrintable(directory));
+    if (ok) qDebug() << "load ok" << directory;
     //qDebug() << "open directory" << directory;
 
     //Q_ASSERT(QSound::isAvailable());

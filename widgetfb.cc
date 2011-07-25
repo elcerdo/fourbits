@@ -20,11 +20,11 @@ static const QColor colors[NBEATS] = {
 };
 
 #define OUTTERRADIUS 80
-#define OUTTERWIDTHMIN 40
-#define OUTTERWIDTHMAX 80
-#define INNERRADIUS 50
-#define KERN 10
-#define FADESPEED 3.3
+#define OUTTERWIDTHMIN 80
+#define OUTTERWIDTHMAX 100
+#define INNERRADIUS 55
+#define KERN -20
+#define FADESPEED 5
 
 // layer style
 void WidgetFB::drawLayers(QPainter &painter) const {
@@ -95,7 +95,7 @@ void WidgetFB::drawStatic(QPainter &painter) const {
 	    painter.save();
 	    painter.translate(index*(OUTTERRADIUS*2+KERN),0);
 	    QPen pen;
-	    pen.setWidth(5);
+	    pen.setWidth(OUTTERWIDTHMIN);
 	    painter.setPen(pen);
 	    painter.drawEllipse(-OUTTERRADIUS,-OUTTERRADIUS,2*OUTTERRADIUS,2*OUTTERRADIUS);
 	    painter.restore();
@@ -172,6 +172,10 @@ void WidgetFB::on_actionSetStyle_activated() {
 }
 
 WidgetFB::WidgetFB(QWidget *parent) : QWidget(parent), style(0) {
+    const int w = NBEATS*OUTTERRADIUS*2+(NBEATS-1)*KERN+OUTTERWIDTHMAX+10;
+    const int h = (OUTTERRADIUS)*2+OUTTERWIDTHMAX+10;
+    setMinimumHeight(h);
+    setMinimumWidth(w);
     resize(WIDTH,HEIGHT);
     for (int k=0; k<NBEATS; k++) {
         bits.append(Bit());
