@@ -1,5 +1,5 @@
-HEADERS = widgetfb.h mainwindow.h player.h
-SOURCES = widgetfb.cc mainwindow.cc player.cc
+HEADERS = widgettab.h widgetfb.h mainwindow.h player.h
+SOURCES = widgettab.cc widgetfb.cc mainwindow.cc player.cc
 FORMS = mainwindow.ui
 CONFIG += release
 SOURCES += main.cc

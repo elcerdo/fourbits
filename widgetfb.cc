@@ -8,8 +8,6 @@
 #include <QColor>
 #include <QMenu>
 
-#define WIDTH 1000
-#define HEIGHT 400
 #define NBEATS 4
 
 static const QColor colors[NBEATS] = {
@@ -176,7 +174,6 @@ WidgetFB::WidgetFB(QWidget *parent) : QWidget(parent), style(0) {
     const int h = (OUTTERRADIUS)*2+OUTTERWIDTHMAX+10;
     setMinimumHeight(h);
     setMinimumWidth(w);
-    resize(WIDTH,HEIGHT);
     for (int k=0; k<NBEATS; k++) {
         bits.append(Bit());
     }

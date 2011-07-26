@@ -6,23 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>996</width>
-    <height>594</height>
+    <width>542</width>
+    <height>446</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0" colspan="2">
      <widget class="WidgetFB" name="widgetFB" native="true">
       <property name="focusPolicy">
        <enum>Qt::ClickFocus</enum>
       </property>
      </widget>
     </item>
-    <item>
+    <item row="1" column="0">
      <widget class="QLabel" name="label">
       <property name="font">
        <font>
@@ -40,6 +40,9 @@
       </property>
      </widget>
     </item>
+    <item row="1" column="1">
+     <widget class="WidgetTab" name="widgetTab" native="true"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -47,7 +50,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>996</width>
+     <width>542</width>
      <height>23</height>
     </rect>
    </property>
@@ -79,6 +82,15 @@
     <signal>stateChanged(int)</signal>
    </slots>
   </customwidget>
+  <customwidget>
+   <class>WidgetTab</class>
+   <extends>QWidget</extends>
+   <header>widgettab.h</header>
+   <container>1</container>
+   <slots>
+    <slot>setState(int)</slot>
+   </slots>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
@@ -95,6 +107,22 @@
     <hint type="destinationlabel">
      <x>713</x>
      <y>371</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widgetFB</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>widgetTab</receiver>
+   <slot>setState(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>373</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>557</x>
+     <y>424</y>
     </hint>
    </hints>
   </connection>
