@@ -9,7 +9,7 @@ class Player {
 	Player();
 	~Player();
 	void setNote(int note, bool state);
-	void loadSamplesFromDirectory(const std::string &directory);
+	bool loadSamplesFromDirectory(const std::string &directory);
 	void clearNotes();
 	void fade();
 	void playSample(int number);
