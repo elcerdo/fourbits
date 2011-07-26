@@ -14,6 +14,7 @@ unix {
 	LIBS += -lbass.32b
 	}
 }
-macos {
+macx {
+	LIBS += -lbass
 	POST_TARGETDEPS = libbass.dylib
 }
