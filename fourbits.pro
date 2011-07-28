@@ -16,5 +16,7 @@ unix {
 }
 macx {
 	LIBS += -lbass
-	POST_TARGETDEPS = libbass.dylib
+	PRIVATE_FRAMEWORKS.files = libbass.dylib
+	PRIVATE_FRAMEWORKS.path = Contents/MacOS
+	QMAKE_BUNDLE_DATA += PRIVATE_FRAMEWORKS
 }
