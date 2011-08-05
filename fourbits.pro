@@ -16,7 +16,7 @@ linux {
 }
 macx {
 	LIBS += -lbass
-	PRIVATE_FRAMEWORKS.files = libbass.dylib QtCore.framework QtGui.framework
-	PRIVATE_FRAMEWORKS.path = Contents/MacOS Contents/MacOS Content/MacOS
+	PRIVATE_FRAMEWORKS.files = libbass.dylib
+	PRIVATE_FRAMEWORKS.path = Contents/MacOS
 	QMAKE_BUNDLE_DATA += PRIVATE_FRAMEWORKS
 }
