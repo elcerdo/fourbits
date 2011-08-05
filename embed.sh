@@ -20,5 +20,5 @@ base_dir="fourbits.app/Contents/MacOS"
 base_bin="${base_dir}/fourbits"
 test -f "${base_bin}" || exit 23
 otool -L "${base_bin}"
-macdeployqt fourbits.app
+macdeployqt fourbits.app -no-plugins -dmg
 otool -L "${base_bin}"
