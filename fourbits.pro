@@ -4,7 +4,7 @@ FORMS = mainwindow.ui
 CONFIG += release
 SOURCES += main.cc
 LIBS += -L.
-unix {
+linux {
 	HARDWARE_PLATFORM = $$system(uname -a)
 	contains( HARDWARE_PLATFORM, x86_64 ) {
 	# 64-bit Linux
@@ -16,7 +16,7 @@ unix {
 }
 macx {
 	LIBS += -lbass
-	PRIVATE_FRAMEWORKS.files = libbass.dylib
-	PRIVATE_FRAMEWORKS.path = Contents/MacOS
+	PRIVATE_FRAMEWORKS.files = libbass.dylib QtCore.framework QtGui.framework
+	PRIVATE_FRAMEWORKS.path = Contents/MacOS Contents/MacOS Content/MacOS
 	QMAKE_BUNDLE_DATA += PRIVATE_FRAMEWORKS
 }
