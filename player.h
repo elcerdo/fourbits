@@ -4,6 +4,8 @@
 #include "bass.h"
 #include <string>
 
+#define NSAMPLES 4
+
 class Player {
     public:
 	Player();
@@ -12,12 +14,14 @@ class Player {
 	bool loadSamplesFromDirectory(const std::string &directory);
 	void clearNotes();
 	void fade();
-	void playSample(int number);
+	void playSample(int sample);
+	void setSampleVolume(int sample, float volume);
+	void setSynthVolume(float volume);
     protected:
 	BASS_INFO info;
 	HSTREAM stream;
-	HSAMPLE samples[4];
-	bool fading;
+	HSAMPLE samples[NSAMPLES];
+	float samplesVolumes[NSAMPLES];
 	bool samplesWorking;
 };
 

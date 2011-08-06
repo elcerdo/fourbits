@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QColor>
 #include <QPalette>
+#include <cmath>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
@@ -36,6 +37,32 @@ void MainWindow::on_widgetFB_padPressed(int number) {
     player.playSample(number);
 }
 
+void MainWindow::on_actionResetVolumes_activated() {
+    sliderSampleVolume0->setValue(0);
+    sliderSampleVolume1->setValue(0);
+    sliderSampleVolume2->setValue(0);
+    sliderSampleVolume3->setValue(0);
+    sliderSynthVolume->setValue(0);
+}
+
+float computeVolume(int value) {
+    return powf(2.,value/32.);
+}
+void MainWindow::on_sliderSampleVolume0_valueChanged(int value) {
+    player.setSampleVolume(0,computeVolume(value));
+}
+void MainWindow::on_sliderSampleVolume1_valueChanged(int value) {
+    player.setSampleVolume(1,computeVolume(value));
+}
+void MainWindow::on_sliderSampleVolume2_valueChanged(int value) {
+    player.setSampleVolume(2,computeVolume(value));
+}
+void MainWindow::on_sliderSampleVolume3_valueChanged(int value) {
+    player.setSampleVolume(3,computeVolume(value));
+}
+void MainWindow::on_sliderSynthVolume_valueChanged(int value) {
+    player.setSynthVolume(computeVolume(value));
+}
 
 void MainWindow::on_actionOpenDirectory_activated() {
     QString directory = QFileDialog::getExistingDirectory();

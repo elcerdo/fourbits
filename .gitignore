@@ -7,7 +7,7 @@ Makefile
 *.o
 moc_*
 ui_*
-synth
+fourbits
 *.zip
 mixer_bass
 mixer_bass_ext

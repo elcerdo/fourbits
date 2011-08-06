@@ -4,17 +4,18 @@ FORMS = mainwindow.ui
 CONFIG += release
 SOURCES += main.cc
 LIBS += -L.
-linux {
+linux-g++ {
 	HARDWARE_PLATFORM = $$system(uname -a)
 	contains( HARDWARE_PLATFORM, x86_64 ) {
-	# 64-bit Linux
+	message(Linux 64b)
 	LIBS += -lbass.64b
 	} else {
-	# 32-bit Linux
+	message(Linux 32b)
 	LIBS += -lbass.32b
 	}
 }
 macx {
+	message(Mac)
 	LIBS += -lbass
 	PRIVATE_FRAMEWORKS.files = libbass.dylib
 	PRIVATE_FRAMEWORKS.path = Contents/MacOS

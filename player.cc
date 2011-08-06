@@ -56,15 +56,19 @@ void Player::setNote(int key,bool state) {
     }
 }
 
+void Player::setSampleVolume(int number, float volume) {
+    assert(number>=0);
+    assert(number<NSAMPLES);
+    samplesVolumes[number] = volume;
+}
+
 void Player::playSample(int number) {
+    assert(number>=0);
+    assert(number<NSAMPLES);
     if (!samplesWorking) return;
 
     HSAMPLE handle = BASS_SampleGetChannel(samples[number],FALSE);
-    BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
-    if (number==0) {
-        BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,.1);
-    }
-
+    BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,samplesVolumes[number]);
     BASS_ChannelSetAttribute(handle,BASS_ATTRIB_PAN,((rand()%201)-100)/100.f);
 
     BASS_ChannelPlay(handle,false);
@@ -74,7 +78,6 @@ void Player::fade() {
     for (int n=0; n<KEYS; n++) {
         if (vol[n]==MAXVOL) vol[n]--;
     }
-
 }
 
 Player::Player() :
@@ -94,22 +97,25 @@ samplesWorking(false) {
     stream = BASS_StreamCreate(44100,2,0,(STREAMPROC*)WriteStream,0);
     BASS_ChannelPlay(stream,TRUE);
 
-    for (int kk=0; kk<4; kk++) { samples[kk] = 0; }
+    for (int kk=0; kk<NSAMPLES; kk++) {
+	samples[kk] = 0;
+	samplesVolumes[kk] = 1.f;
+    }
     //loadSamplesFromDirectory("andrew");
 }
 
+void Player::setSynthVolume(float volume) {
+    BASS_ChannelSetAttribute(stream,BASS_ATTRIB_VOL,volume);
+}
+
 bool Player::loadSamplesFromDirectory(const std::string &directory) {
-    HSAMPLE local_samples[4];
+    HSAMPLE local_samples[NSAMPLES];
 
     int number;
     number = 0;
     local_samples[number] = BASS_SampleLoad(false,(directory+"/1.wav").c_str(),0,0,3,BASS_SAMPLE_OVER_POS);
     if (local_samples[number]==0) {
 	return false;
-    }
-    {
-        HSAMPLE handle = BASS_SampleGetChannel(local_samples[number],FALSE);
-        BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,.01);
     }
 
     number = 1;
@@ -118,10 +124,6 @@ bool Player::loadSamplesFromDirectory(const std::string &directory) {
 	BASS_SampleFree(local_samples[0]);
 	return false;
     }
-    {
-        HSAMPLE handle = BASS_SampleGetChannel(local_samples[number],FALSE);
-        BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
-    }
 
     number = 2;
     local_samples[number] = BASS_SampleLoad(false,(directory+"/3.wav").c_str(),0,0,3,BASS_SAMPLE_OVER_POS);
@@ -129,10 +131,6 @@ bool Player::loadSamplesFromDirectory(const std::string &directory) {
 	BASS_SampleFree(local_samples[0]);
 	BASS_SampleFree(local_samples[1]);
 	return false;
-    }
-    {
-        HSAMPLE handle = BASS_SampleGetChannel(local_samples[number],FALSE);
-        BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
     }
 
     number = 3;
@@ -144,12 +142,8 @@ bool Player::loadSamplesFromDirectory(const std::string &directory) {
 	BASS_SampleFree(local_samples[2]);
 	return false;
     }
-    {
-        HSAMPLE handle = BASS_SampleGetChannel(local_samples[number],FALSE);
-        BASS_ChannelSetAttribute(handle,BASS_ATTRIB_VOL,1.);
-    }
 
-    for (int kk=0; kk<4; kk++) {
+    for (int kk=0; kk<NSAMPLES; kk++) {
 	samples[kk] = local_samples[kk];
     }
     samplesWorking = true;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
-    <height>504</height>
+    <width>717</width>
+    <height>567</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,6 +43,117 @@
     <item row="1" column="1">
      <widget class="WidgetTab" name="widgetTab" native="true"/>
     </item>
+    <item row="0" column="2" rowspan="2">
+     <widget class="QFrame" name="frame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QSlider" name="sliderSampleVolume0">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(0, 255, 255);</string>
+         </property>
+         <property name="minimum">
+          <number>-128</number>
+         </property>
+         <property name="maximum">
+          <number>64</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="sliderSampleVolume1">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 0, 255);</string>
+         </property>
+         <property name="minimum">
+          <number>-128</number>
+         </property>
+         <property name="maximum">
+          <number>64</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="sliderSampleVolume2">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 0);</string>
+         </property>
+         <property name="minimum">
+          <number>-128</number>
+         </property>
+         <property name="maximum">
+          <number>64</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="sliderSampleVolume3">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(0, 0, 0);</string>
+         </property>
+         <property name="minimum">
+          <number>-128</number>
+         </property>
+         <property name="maximum">
+          <number>64</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>5</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QSlider" name="sliderSynthVolume">
+         <property name="minimum">
+          <number>-128</number>
+         </property>
+         <property name="maximum">
+          <number>64</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -50,25 +161,35 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>605</width>
-     <height>22</height>
+     <width>717</width>
+     <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuOprnf">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Open</string>
+     <string>Actions</string>
     </property>
     <addaction name="actionOpenDirectory"/>
+    <addaction name="separator"/>
+    <addaction name="actionResetVolumes"/>
    </widget>
-   <addaction name="menuOprnf"/>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpenDirectory">
    <property name="text">
-    <string>openDirectory</string>
+    <string>&amp;Open Samples</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionResetVolumes">
+   <property name="text">
+    <string>&amp;Reset Volumes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>
