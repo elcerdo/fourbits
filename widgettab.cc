@@ -7,18 +7,18 @@
 #define HEIGHT 400
 #define NBEATS 4
 
-static const QColor colors[NBEATS] = {
-    QColor::fromCmykF(1,0,0,0),
-    QColor::fromCmykF(0,1,0,0),
-    QColor::fromCmykF(0,0,1,0),
-    QColor::fromCmykF(0,0,0,1)
-};
+//static const QColor colors[NBEATS] = {
+//    QColor::fromCmykF(1,0,0,0),
+//    QColor::fromCmykF(0,1,0,0),
+//    QColor::fromCmykF(0,0,1,0),
+//    QColor::fromCmykF(0,0,0,1)
+//};
 
 #define OUTTERRADIUS 20
-#define OUTTERWIDTHMIN 20
-#define INNERRADIUSMAX 14
+#define OUTTERWIDTHMIN 12
+#define INNERRADIUSMAX 10
 #define INNERRADIUSMIN 0
-#define KERN -5
+#define KERN 3
 #define FADESPEED .3
 
 // layer style
@@ -33,8 +33,9 @@ void WidgetTab::drawLayers(QPainter &painter) const {
 		painter.translate(ii*(OUTTERRADIUS*2+KERN),jj*(OUTTERRADIUS*2+KERN));
 		QPen pen;
 		pen.setWidth(OUTTERWIDTHMIN);
+		pen.setJoinStyle(Qt::RoundJoin);
 		painter.setPen(pen);
-		painter.drawEllipse(-OUTTERRADIUS,-OUTTERRADIUS,2*OUTTERRADIUS,2*OUTTERRADIUS);
+		painter.drawRect(-OUTTERRADIUS,-OUTTERRADIUS,2*OUTTERRADIUS,2*OUTTERRADIUS);
 		painter.restore();
 	    }
 	}
@@ -48,9 +49,13 @@ void WidgetTab::drawLayers(QPainter &painter) const {
 		QBrush brush;
 		brush.setStyle(Qt::SolidPattern);
 		brush.setColor("white");
-		painter.setPen(Qt::NoPen);
 		painter.setBrush(brush);
-		painter.drawEllipse(-OUTTERRADIUS,-OUTTERRADIUS,2*OUTTERRADIUS,2*OUTTERRADIUS);
+		QPen pen;
+		pen.setWidth(5);
+		pen.setColor("white");
+		pen.setJoinStyle(Qt::RoundJoin);
+		painter.setPen(pen);
+		painter.drawRect(-OUTTERRADIUS+5,-OUTTERRADIUS+5,2*OUTTERRADIUS-10,2*OUTTERRADIUS-10);
 		painter.restore();
 	    }
 	}
@@ -69,9 +74,13 @@ void WidgetTab::drawLayers(QPainter &painter) const {
 	    QBrush brush;
 	    brush.setStyle(Qt::SolidPattern);
 	    if (cstate==state) brush.setColor("red");
-	    painter.setPen(Qt::NoPen);
+	    QPen pen;
+	    pen.setJoinStyle(Qt::RoundJoin);
+	    pen.setWidth(5);
+	    pen.setColor(brush.color());
 	    painter.setBrush(brush);
-	    painter.drawEllipse(-radiuses[cstate],-radiuses[cstate],2*radiuses[cstate],2*radiuses[cstate]);
+	    painter.setPen(pen);
+	    painter.drawRect(-radiuses[cstate],-radiuses[cstate],2*radiuses[cstate],2*radiuses[cstate]);
 	    painter.restore();
 	}
     }

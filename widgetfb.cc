@@ -17,11 +17,11 @@ static const QColor colors[NBEATS] = {
     QColor::fromCmykF(0,0,0,1)
 };
 
-#define OUTTERRADIUS 80
-#define OUTTERWIDTHMIN 80
-#define OUTTERWIDTHMAX 100
-#define INNERRADIUS 55
-#define KERN -20
+#define OUTTERRADIUS 60
+#define OUTTERWIDTHMIN 20
+#define OUTTERWIDTHMAX 40
+#define INNERRADIUS 50
+#define KERN 30
 #define FADESPEED 5
 
 // layer style
