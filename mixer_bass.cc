@@ -16,10 +16,10 @@ HSTREAM stream;
 
 int sinetable[TABLESIZE];
 
-const unsigned int keys[KEYS]={
-    'Q','2','W','3','E','R','5','T','6','Y','7','U',
-    'I','9','O','0','P'
-};
+//const unsigned int keys[KEYS]={
+//    'Q','2','W','3','E','R','5','T','6','Y','7','U',
+//    'I','9','O','0','P'
+//};
 
 #define MAXVOL  4000    // higher value = longer fadeout
 int vol[KEYS]={0},pos[KEYS];

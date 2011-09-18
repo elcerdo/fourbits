@@ -210,8 +210,9 @@ void WidgetFB::toogleState(int num) {
 
 void WidgetFB::keyPressEvent(QKeyEvent* event) {
     //qDebug() << "pressed" << event->key();
+    if (event->isAutoRepeat()) return;
     int kk=0;
-    if (event->key()==65 || event->key()==81) {
+    if (event->key()==Qt::Key_A || event->key()==Qt::Key_Q) {
         toogleState(kk);
         emit stateChanged(getState());
         emit padPressed(kk);

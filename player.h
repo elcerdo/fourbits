@@ -18,7 +18,6 @@ class Player {
 	void setSampleVolume(int sample, float volume);
 	void setSynthVolume(float volume);
     protected:
-	BASS_INFO info;
 	HSTREAM stream;
 	HSAMPLE samples[NSAMPLES];
 	float samplesVolumes[NSAMPLES];

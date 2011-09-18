@@ -5,10 +5,10 @@
 #include <cmath>
 #include <cassert>
 #include <string>
-//#include <iostream>
-//using std::endl;
-//using std::cerr;
-//using std::cout;
+#include <iostream>
+using std::endl;
+using std::cerr;
+using std::cout;
 
 #define PI 3.14159265358979323846
 #define TABLESIZE 2048
@@ -80,9 +80,22 @@ void Player::fade() {
     }
 }
 
+void displayInfo()
+{
+    BASS_INFO info;
+    BASS_GetInfo(&info);
+    cout << "*******************" << endl;
+    cout << "minbuf " << info.minbuf << endl;
+    cout << "latency " << info.latency << endl;
+    cout << "buf " << BASS_GetConfig(BASS_CONFIG_BUFFER) << endl;
+    cout << "hwbuf " << BASS_GetConfig(BASS_CONFIG_DEV_BUFFER) << endl;
+    cout << "updateperiod " << BASS_GetConfig(BASS_CONFIG_UPDATEPERIOD) << endl;
+    cout << "updatethread " << BASS_GetConfig(BASS_CONFIG_UPDATETHREADS) << endl;
+    cout << "*******************" << endl;
+}
+
 Player::Player() :
 samplesWorking(false) {
-    BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD,10);
 
     if (!BASS_Init(-1,44100,BASS_DEVICE_LATENCY,NULL,NULL)) {
         //cerr << "can't init bass" << endl;
@@ -91,10 +104,23 @@ samplesWorking(false) {
 
     for (int a=0; a<TABLESIZE; a++) sinetable[a]=(int)(sin(2.0*PI*(double)a/TABLESIZE)*7000.0);
 
-    BASS_GetInfo(&info);
-    BASS_SetConfig(BASS_CONFIG_BUFFER,10+info.minbuf);
+    bool ok = false;
+    displayInfo();
+    ok = BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD,5);
+    cout << ok << " updateperiod " << BASS_GetConfig(BASS_CONFIG_UPDATEPERIOD) << endl;
+    ok = BASS_SetConfig(BASS_CONFIG_BUFFER,22);
+    cout << ok << " buf " << BASS_GetConfig(BASS_CONFIG_BUFFER) << endl;
+    ok = BASS_SetConfig(BASS_CONFIG_DEV_BUFFER,0);
+    cout << ok << " hwbuf " << BASS_GetConfig(BASS_CONFIG_DEV_BUFFER) << endl;
+    ok = BASS_SetConfig(BASS_CONFIG_UPDATETHREADS,2);
+    cout << ok << " updatethread " << BASS_GetConfig(BASS_CONFIG_UPDATETHREADS) << endl;
+    displayInfo();
 
     stream = BASS_StreamCreate(44100,2,0,(STREAMPROC*)WriteStream,0);
+    ok = BASS_ChannelSetAttribute(stream,BASS_ATTRIB_NOBUFFER,true);
+    float aa;
+    BASS_ChannelGetAttribute(stream,BASS_ATTRIB_NOBUFFER,&aa);
+    cout << ok << " streamnobuffer " << aa << endl;
     BASS_ChannelPlay(stream,TRUE);
 
     for (int kk=0; kk<NSAMPLES; kk++) {
