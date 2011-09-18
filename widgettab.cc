@@ -17,6 +17,8 @@
 #define OUTTERRADIUS 20
 #define OUTTERWIDTHMIN 12
 #define INNERRADIUSMAX 10
+//#define OUTTERWIDTHMIN 10
+//#define INNERRADIUSMAX 14
 #define INNERRADIUSMIN 0
 #define KERN 3
 #define FADESPEED .3
@@ -37,6 +39,16 @@ void WidgetTab::drawLayers(QPainter &painter) const {
 		painter.setPen(pen);
 		painter.drawRect(-OUTTERRADIUS,-OUTTERRADIUS,2*OUTTERRADIUS,2*OUTTERRADIUS);
 		painter.restore();
+		//int radius = OUTTERWIDTHMIN+OUTTERRADIUS;
+		//painter.save();
+		//painter.translate(ii*(OUTTERRADIUS*2+KERN),jj*(OUTTERRADIUS*2+KERN));
+		//QBrush brush;
+		//brush.setColor("black");
+		//brush.setStyle(Qt::SolidPattern);
+		//painter.setBrush(brush);
+		//painter.setPen(Qt::NoPen);
+		//painter.drawEllipse(-radius,-radius,2*radius,2*radius);
+		//painter.restore();
 	    }
 	}
     }
@@ -90,16 +102,20 @@ void WidgetTab::drawLayers(QPainter &painter) const {
 
 void WidgetTab::on_timer_timeout() {
     for (int kk=0; kk<16; kk++) {
-	radiuses[kk] -= FADESPEED;
-	if (radiuses[kk]<INNERRADIUSMIN) radiuses[kk]=INNERRADIUSMIN;
+		radiuses[kk] -= FADESPEED;
+		if (radiuses[kk]<INNERRADIUSMIN) radiuses[kk]=INNERRADIUSMIN;
     }
     update();
 }
 
 WidgetTab::WidgetTab(QWidget* parent) : QWidget(parent) {
+	const int s = NBEATS*OUTTERRADIUS*2+(NBEATS-1)*KERN+2*OUTTERWIDTHMIN+10;
+    setMinimumHeight(s);
+    setMinimumWidth(s);
+
     state = 0;
     for (int kk=0; kk<16; kk++) {
-	radiuses[kk] = 0;
+		radiuses[kk] = 0;
     }
 
     timer = new QTimer(this);
