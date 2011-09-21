@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QDebug>
+#include <cmath>
 
 #define WIDTH 1000
 #define HEIGHT 400
@@ -25,8 +26,6 @@
 
 // layer style
 void WidgetTab::drawLayers(QPainter &painter) const {
-    painter.save();
-    painter.translate(-((NBEATS-1)*(OUTTERRADIUS*2+KERN))/2,-((NBEATS-1)*(OUTTERRADIUS*2+KERN))/2);
 
     { // drawing back
 	for (int ii=0; ii<NBEATS; ii++) {
@@ -77,11 +76,11 @@ void WidgetTab::drawLayers(QPainter &painter) const {
 	for (int cstate=0; cstate<16; cstate++) {
 	    painter.save();
 	    int ii = cstate%4;
-	    if (ii==2) ii=3;
-	    else if (ii==3) ii=2;
+	    //if (ii==2) ii=3;
+	    //else if (ii==3) ii=2;
 	    int jj = cstate/4;
-	    if (jj==2) jj=3;
-	    else if (jj==3) jj=2;
+	    //if (jj==2) jj=3;
+	    //else if (jj==3) jj=2;
 	    painter.translate(ii*(OUTTERRADIUS*2+KERN),jj*(OUTTERRADIUS*2+KERN));
 	    QBrush brush;
 	    brush.setStyle(Qt::SolidPattern);
@@ -97,7 +96,63 @@ void WidgetTab::drawLayers(QPainter &painter) const {
 	}
     }
 
-    painter.restore();
+    //{ //drawing focus pos
+    //    int ii = std::floor((clicked.x()+OUTTERRADIUS+KERN/2)/(OUTTERRADIUS*2+KERN));
+    //    int jj = std::floor((clicked.y()+OUTTERRADIUS+KERN/2)/(OUTTERRADIUS*2+KERN));
+    //    painter.save();
+    //    painter.translate(ii*(OUTTERRADIUS*2+KERN),jj*(OUTTERRADIUS*2+KERN));
+    //    painter.setBrush(Qt::green);
+    //    painter.drawEllipse(-10,-10,20,20);
+    //    painter.restore();
+    //    painter.save();
+    //    painter.translate(clicked);
+    //    painter.setBrush(Qt::yellow);
+    //    painter.drawEllipse(-5,-5,10,10);
+    //    painter.restore();
+    //}
+
+}
+
+void WidgetTab::contextMenuEvent(QContextMenuEvent* event)
+{
+    if (event->reason()!=QContextMenuEvent::Mouse) return;
+
+    bool ok = false;
+    QTransform inverse = transform.inverted(&ok);
+    Q_ASSERT(ok);
+    QPointF mapped = inverse.map(event->pos());
+
+    int ii = std::floor((mapped.x()+OUTTERRADIUS+KERN/2)/(OUTTERRADIUS*2+KERN));
+    int jj = std::floor((mapped.y()+OUTTERRADIUS+KERN/2)/(OUTTERRADIUS*2+KERN));
+    if (ii<0 || jj<0) return;
+    if (ii>3 || jj>3) return; 
+    int state = jj*4+ii;
+
+    event->accept();
+    qDebug() << "context" << ii << jj;
+
+    QMenu menu;
+    QAction* titleAction = menu.addAction(QString("[%1,%2] %3").arg(ii).arg(jj).arg(state));
+    QAction* loadSampleAction = menu.addAction("&Load Sample");
+    menu.addMenu(tuneMenu);
+
+    titleAction->setEnabled(false);
+    Q_UNUSED(loadSampleAction);
+
+    menu.exec(event->globalPos());
+}
+
+void WidgetTab::resizeEvent(QResizeEvent* event)
+{
+    Q_UNUSED(event);
+    updateTransform();
+}
+
+void WidgetTab::updateTransform()
+{
+    transform = QTransform();
+    transform.translate(width()/2.,height()/2.);
+    transform.translate(-((NBEATS-1)*(OUTTERRADIUS*2+KERN))/2,-((NBEATS-1)*(OUTTERRADIUS*2+KERN))/2);
 }
 
 void WidgetTab::on_timer_timeout() {
@@ -106,6 +161,13 @@ void WidgetTab::on_timer_timeout() {
 		if (radiuses[kk]<INNERRADIUSMIN) radiuses[kk]=INNERRADIUSMIN;
     }
     update();
+}
+
+void WidgetTab::selectTune()
+{
+    QAction* selectTuneAction = dynamic_cast<QAction*>(sender());
+    Q_ASSERT(selectTuneAction);
+    qDebug() << "selected" << selectTuneAction->data().toInt();
 }
 
 WidgetTab::WidgetTab(QWidget* parent) : QWidget(parent) {
@@ -117,6 +179,16 @@ WidgetTab::WidgetTab(QWidget* parent) : QWidget(parent) {
     for (int kk=0; kk<16; kk++) {
 		radiuses[kk] = 0;
     }
+
+    updateTransform();
+
+    tuneMenu = new QMenu("&Select Tune",this);
+    for (int kk=0; kk<10; kk++) {
+	QAction* selectTuneAction = tuneMenu->addAction(QString("%1").arg(kk));
+	selectTuneAction->setData(kk);
+	connect(selectTuneAction,SIGNAL(triggered()),SLOT(selectTune()));
+    }
+
 
     timer = new QTimer(this);
     timer->setObjectName("timer");
@@ -138,8 +210,8 @@ void WidgetTab::paintEvent(QPaintEvent *event) {
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
+    painter.setTransform(transform);
 
-    painter.translate(width()/2,height()/2);
     drawLayers(painter);
 }
 

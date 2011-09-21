@@ -4,7 +4,7 @@ FORMS = mainwindow.ui
 CONFIG += release
 SOURCES += main.cc
 LIBS += -L.
-linux-g++ {
+unix {
 	HARDWARE_PLATFORM = $$system(uname -a)
 	contains( HARDWARE_PLATFORM, x86_64 ) {
 	message(Linux 64b)
