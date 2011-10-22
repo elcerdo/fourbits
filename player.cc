@@ -12,47 +12,66 @@ using std::cout;
 
 #define PI 3.14159265358979323846
 #define TABLESIZE 2048
-#define KEYS 17
-
 int sinetable[TABLESIZE];
 
-#define MAXVOL  4000    // higher value = longer fadeout
-int vol[KEYS] = {0},pos[KEYS];
+NoteData NoteData::standard() {
+    static const int default_notes[16] = {-24, -22, -20, -19, -17, -15, -14, -12, -10, -8, -7, -5, -3, -2, 0, 2};
+    NoteData data;
+    for (int kk=0; kk<NoteData::nstates; kk++) {
+        data.notes[kk] = default_notes[kk];
+        data.volumes[kk] = 0;
+        data.positions[kk] = 0;
+    }
+    return data;
+}
 
-int gamme[16] = {
-    -24, -22, -20, -19, -17, -15, -14, -12, -10, -8, -7, -5, -3, -2, 0, 2
-};
-
+static NoteData noteData = NoteData::standard();
 
 DWORD CALLBACK WriteStream(HSTREAM, short *buffer, DWORD length, void *) {
     memset(buffer,0,length);
-    for (int n=0; n<KEYS; n++) {
-        if (!vol[n]) continue;
-        float f=pow(2.0,gamme[n]/12.0+1)*TABLESIZE*440.0/44100.0;
-        for (DWORD c=0; c<length/4 && vol[n]; c++) {
-            int s=sinetable[(int)((pos[n]++)*f)&(TABLESIZE-1)]*vol[n]/MAXVOL;
-            s+=(int)buffer[c*2];
+
+    for (int kk=0; kk<NoteData::nstates; kk++) {
+        const int& note = noteData.notes[kk];
+        int& volume = noteData.volumes[kk];
+        int& position = noteData.positions[kk];
+
+        if (volume == 0) continue;
+
+        const float f = pow(2.0,note/12.0+1)*TABLESIZE*440.0/44100.0;
+
+        for (DWORD c=0; c<length/4; c++) {
+            int s = sinetable[static_cast<int>(position*f) % TABLESIZE]*volume/NoteData::volume_max;
+            s += static_cast<int>(buffer[c*2]);
             if (s>32767) s=32767;
             else if (s<-32768) s=-32768;
-            buffer[c*2+1]=buffer[c*2]=s; // left and right channels are the same
-            if (vol[n]<MAXVOL) vol[n]--;
+
+            buffer[c*2+1] = buffer[c*2] = s; // left and right channels are the same
+
+            position++;
+            if (volume>0 && volume<NoteData::volume_max) volume--;
         }
     }
+
     return length;
 }
 
+NoteData& Player::getNoteData()
+{
+    return noteData;
+}
+
 void Player::clearNotes() {
-    for (int n=0; n<KEYS; n++) {
+    for (int n=0; n<NoteData::nstates; n++) {
         setNote(n,false);
     }
 }
 
 void Player::setNote(int key,bool state) {
     if (state) {
-        pos[key]=0;
-        vol[key]=MAXVOL;
+        noteData.positions[key] = 0;
+        noteData.volumes[key] = NoteData::volume_max;
     } else {
-        vol[key]=0;
+        noteData.volumes[key] = 0;
     }
 }
 
@@ -75,8 +94,9 @@ void Player::playSample(int number) {
 }
 
 void Player::fade() {
-    for (int n=0; n<KEYS; n++) {
-        if (vol[n]==MAXVOL) vol[n]--;
+    for (int n=0; n<NoteData::nstates; n++) {
+        int& volume = noteData.volumes[n];
+        if (volume == NoteData::volume_max) volume--;
     }
 }
 
@@ -106,9 +126,9 @@ samplesWorking(false) {
 
     bool ok = false;
     displayInfo();
-    ok = BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD,5);
+    ok = BASS_SetConfig(BASS_CONFIG_UPDATEPERIOD,12);
     cout << ok << " updateperiod " << BASS_GetConfig(BASS_CONFIG_UPDATEPERIOD) << endl;
-    ok = BASS_SetConfig(BASS_CONFIG_BUFFER,22);
+    ok = BASS_SetConfig(BASS_CONFIG_BUFFER,0);
     cout << ok << " buf " << BASS_GetConfig(BASS_CONFIG_BUFFER) << endl;
     ok = BASS_SetConfig(BASS_CONFIG_DEV_BUFFER,0);
     cout << ok << " hwbuf " << BASS_GetConfig(BASS_CONFIG_DEV_BUFFER) << endl;

@@ -65,7 +65,7 @@ void MainWindow::on_sliderSynthVolume_valueChanged(int value) {
 }
 
 void MainWindow::on_actionOpenDirectory_activated() {
-    QString directory = QFileDialog::getExistingDirectory();
+    QString directory = QFileDialog::getExistingDirectory(this,"Open Samples Directory","/home");
     if (directory.isNull()) return;
     bool ok = player.loadSamplesFromDirectory(qPrintable(directory));
     if (ok) qDebug() << "load ok" << directory;
